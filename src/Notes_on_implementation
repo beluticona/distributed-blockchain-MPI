@@ -1,0 +1,25 @@
+Cambios en la implementacion:
+
+La funcion verificar_y_migrar_cadena pasa a ser void (en lugar de devolver un bool)
+
+se elimina la funcion 
+bool validate_block_for_chain(const Block *rBlock, const MPI_Status *status)
+
+En lugar de obtener un bool, se efectuan las acciones necesarias sobre la cadena en la funcion int node()
+
+/Agrego el bloque al diccionario, aunque no necesariamente eso lo agrega a la cadena
+    node_blocks[string(rBlock->block_hash)]=*rBlock;
+
+    Esta accion no se efectua ya que se agrega un bloque al diccionario unicamente si pertenece a la cadena 
+
+Se agrega la funcion bool check_coherence_for_chain(const Block* buffer_blockchain, unsigned int block_count);
+Que verifica que haya coherencia en la cadena recibida por otro nodo
+
+En verificar y migrar cadena se agrega un bool que indica:
+
+True :  caso //Si el índice del bloque recibido es el siguiente a mí último bloque actual,
+          //pero el bloque anterior apuntado por el recibido no es mí último actual,
+          //entonces hay una blockchain más larga que la mía.
+
+False: caso //Si el índice del bloque recibido está más de una posición adelantada a mi último bloque actual,
+          //entonces me conviene abandonar mi blockchain actual
